@@ -32,16 +32,21 @@ setup_srHook_directory:
 
 install_srTakeover_hook:
     file.managed:
-      - source: /srv/salt/hana/templates/srTakeover_hook.j2
+      - source: salt://hana/templates/srTakeover_hook.j2
+      - name: /hana/shared/srHook/sr-Takeover.py
       - user: root
       - group: root
       - mode: 644
       - template: jinja
+      - require:
+        - setup_srHook_directory
 
 install_hana_python_packages:
     archive.extracted:
       - name: /hana/shared/srHook
       - source: {{ grains['hana_inst_folder']+'/DATA_UNITS/HDB_CLIENT_LINUX_X86_64/client/PYDBAPI.TGZ' }}
+      - require:
+        - setup_srHook_directory
 
 {% endif %}
 {% endfor %}

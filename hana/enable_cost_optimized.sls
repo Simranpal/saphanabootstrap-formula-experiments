@@ -2,11 +2,12 @@
 {% set host = grains['host'] %}
 
 {% for node in hana.nodes %}
-{% if node.host == host and node.secondary is defined and node.scenario_type.lower() == 'cost-optimized' %}
+{% if node.host == host and node.secondary is defined and node.secondary.scenario_type.lower() == 'cost-optimized' %}
 
 reduce_memory_resources_{{  node.secondary.name+node.sid }}:
-    hana.memory_resources_reduced:
-      - global_allocation_limit: {{node.cost-optimized.global_allocation_limit}}
+    hana.memory_resources_updated:
+      - global_allocation_limit: {{ node.secondary.cost_optimized_parameters.global_allocation_limit }}
+      - preload_column_tables: {{ node.secondary.cost_optimized_parameters.preload_column_tables }}
       - sid: {{  node.sid }}
       - inst: {{  node.instance }}
       - password: {{  node.password }}
